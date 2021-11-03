@@ -1,41 +1,36 @@
 import React, { useState } from "react";
 import Header from "../header/header";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { listTeachers } from "../../actions/qualifyTeachers/qualify";
 import { useDispatch, useSelector } from "react-redux";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faStar } from '@fortawesome/free-solid-svg-icons'
-import { faStar as faRegular } from '@fortawesome/free-regular-svg-icons'
+import { Rating } from 'react-simple-star-rating'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './qualify.css'
 
 const Qualify = () => {
     const dispatch = useDispatch();
     const { listteachers } = useSelector((state) => state.listteachers);
-    console.log("listteachers: ", listteachers);
+    const [rating, setRating] = useState([])
 
-    const starFullColor = <FontAwesomeIcon icon={faStar} style={{ color: 'yellow' }} />
-    const starWithoutColor = <FontAwesomeIcon icon={faRegular} style={{ color: 'yellow' }} />
-    // const [starState, setstarState] = useState({ firstStar: starWithoutColor, secondStar: starWithoutColor, thirdStar: starWithoutColor, fourStar: starWithoutColor, fiveStar: starWithoutColor })
-    // const { firstStar, secondStar, thirdStar, fourStar, fiveStar } = '';
-    const [starState, setstarState] = useState([
-        { name: starWithoutColor },
-        { name: starWithoutColor },
-        { name: starWithoutColor },
-        { name: starWithoutColor },
-        { name: starWithoutColor }
-    ])
-
+    // console.log("listteachers: ", listteachers);
+    
     const listAllTeachers = () => {
         dispatch(listTeachers());
     }
-
-    const changeStar = () => {
-        console.log("Enttre");
-        for (var i = 0; i < starState.length; i++) {
-            setstarState(starState => [...starState, starState[i].name]);
-            console.log("Si hago algo")
-        }
+    const handleRating = (rate,index) => {
+        let obj = {nStart: rate}
+        let copy = rating
+        copy[index] = obj
+        setRating([...copy])
     }
+    const changeFeedback = (e, index) => {
+        let copy = rating
+        copy[index].feedback = e.target.value
+        setRating([...copy]);
+    }
+    const insertQuality = (e) => {
+        console.log("Index: ",e.target.id)
+    }
+
 
     return (
         <div>
@@ -58,15 +53,11 @@ const Qualify = () => {
                                             <div className="card-body">
                                                 <h3 className="card-text" >{elemnt.name}</h3>
                                                 <div className="row justify-content-md-center col-md-12">
-                                                    {starState.map((posiStar, index) => {
-                                                        return (
-                                                            <div key={index} className="col-md-2" onClick={changeStar}>{posiStar.name}</div>
-                                                        )
-                                                    })}
+                                                    <Rating onClick={rate => handleRating(rate,index)} ratingValue={rating[index]?.nStart} />
                                                 </div>
-                                                <label>Feedback</label>
-                                                <textarea className="sizeAll" />
-                                                <button className="btn btn-success sizeAll" >Send Qualify</button>
+                                                <label>Feedback</label> 
+                                                <textarea className="sizeAll" onChange={(e) => {changeFeedback(e, index)}} value={rating[index]?.feedback} />
+                                                <button className="btn btn-success sizeAll" id={index} onClick={e => {insertQuality(e)}} disabled={rating[index]?.feedback?.length ? false : true} >Send Qualify</button>
                                             </div>
                                         </div>
                                     </div>
