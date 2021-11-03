@@ -27,8 +27,8 @@ const Login = () => {
 
     const logIn = () => {
         dispatch(loginUser(dataUserValue));
-        dispatch(listTeachers());
-        if (!credentials.error) {
+        if (credentials.error === false) {
+            dispatch(listTeachers());
             handleRedirect("/qualify")
         }
     }
