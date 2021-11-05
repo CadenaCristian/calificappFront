@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Header from "../header/header";
-import { listTeachers } from "../../actions/qualifyTeachers/qualify";
+import { insertQualify, listTeachers } from "../../actions/qualifyTeachers/qualify";
 import { useDispatch, useSelector } from "react-redux";
 import { Rating } from 'react-simple-star-rating'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,15 +9,16 @@ import './qualify.css'
 const Qualify = () => {
     const dispatch = useDispatch();
     const { listteachers } = useSelector((state) => state.listteachers);
+    const { credentials } = useSelector((state) => state.credentials);
+    console.log("credentials: ", credentials)
     const [rating, setRating] = useState([])
 
-    // console.log("listteachers: ", listteachers);
-    
+
     const listAllTeachers = () => {
         dispatch(listTeachers());
     }
-    const handleRating = (rate,index) => {
-        let obj = {nStart: rate}
+    const handleRating = (rate, index) => {
+        let obj = { nStart: rate }
         let copy = rating
         copy[index] = obj
         setRating([...copy])
@@ -28,7 +29,18 @@ const Qualify = () => {
         setRating([...copy]);
     }
     const insertQuality = (e) => {
-        console.log("Index: ",e.target.id)
+        let position = e.target.id
+        let obj = {
+            "student_name": credentials.dataUser.name,
+            "student_email": credentials.dataUser.email,
+            "student_dni": credentials.dataUser.dni,
+            "teacher_name": listteachers.data[position].name,
+            "teacher_email": listteachers.data[position].email,
+            "teacher_dni": listteachers.data[position].dni,
+            "teacher_note": rating[position].nStart,
+            "feedback": rating[position].feedback
+        }
+        dispatch(insertQualify(obj));
     }
 
 
@@ -53,11 +65,11 @@ const Qualify = () => {
                                             <div className="card-body">
                                                 <h3 className="card-text" >{elemnt.name}</h3>
                                                 <div className="row justify-content-md-center col-md-12">
-                                                    <Rating onClick={rate => handleRating(rate,index)} ratingValue={rating[index]?.nStart} />
+                                                    <Rating onClick={rate => handleRating(rate, index)} ratingValue={rating[index]?.nStart} />
                                                 </div>
-                                                <label>Feedback</label> 
-                                                <textarea className="sizeAll" onChange={(e) => {changeFeedback(e, index)}} value={rating[index]?.feedback} />
-                                                <button className="btn btn-success sizeAll" id={index} onClick={e => {insertQuality(e)}} disabled={rating[index]?.feedback?.length ? false : true} >Send Qualify</button>
+                                                <label>Feedback</label>
+                                                <textarea className="sizeAll" onChange={(e) => { changeFeedback(e, index) }} disabled={rating[index]?.nStart > 0 ? false : true} value={rating[index]?.feedback} />
+                                                <button className="btn btn-success sizeAll" id={index} onClick={e => { insertQuality(e) }} disabled={rating[index]?.feedback?.length ? false : true} >Send Qualify</button>
                                             </div>
                                         </div>
                                     </div>

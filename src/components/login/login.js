@@ -5,14 +5,13 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, retrivePasswordUser } from '../../actions/login/login';
 import { listTeachers } from '../../actions/qualifyTeachers/qualify';
-
+import { adminReports } from '../../actions/admin/admin.js';
 
 const Login = () => {
     const dispatch = useDispatch();
     const History = useHistory();
     const handleRedirect = (route) => { History.push(route) }
     const { credentials } = useSelector((state) => state.credentials);
-    // const { recovercredentials } = useSelector((state) => state.recovercredentials);
     const [visLogin, setvisLogin] = useState('block')
     const [visForgetpass, setvisForgetpass] = useState('none')
     const [dataUserValue, setdataUserValue] = useState({ user: "", password: "", email: "" })
@@ -28,8 +27,15 @@ const Login = () => {
     const logIn = () => {
         dispatch(loginUser(dataUserValue));
         if (credentials.error === false) {
-            dispatch(listTeachers());
-            handleRedirect("/qualify")
+            if (credentials.dataUser.rol === 'student') {
+                handleRedirect("/qualify")
+                dispatch(listTeachers());
+            } else if (credentials.dataUser.rol === 'administrative') {
+                handleRedirect("/reports")
+                dispatch(adminReports());
+            } else {
+                handleRedirect("/")
+            }
         }
     }
     const retrivePassword = () => {
