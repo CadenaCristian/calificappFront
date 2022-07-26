@@ -28,11 +28,13 @@ const Login = () => {
         dispatch(loginUser(dataUserValue));
         if (credentials.error === false) {
             if (credentials.dataUser.rol === 'student') {
-                handleRedirect("/qualify")
                 dispatch(listTeachers());
+                console.log("entre qualify")
+                handleRedirect("/qualify")
             } else if (credentials.dataUser.rol === 'administrative') {
-                handleRedirect("/reports")
                 dispatch(adminReports());
+                handleRedirect("/reports")
+                console.log("entre reports")
             } else {
                 handleRedirect("/")
             }

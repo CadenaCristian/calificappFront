@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../header/header";
 import { insertQualify, listTeachers } from "../../actions/qualifyTeachers/qualify";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +10,6 @@ const Qualify = () => {
     const dispatch = useDispatch();
     const { listteachers } = useSelector((state) => state.listteachers);
     const { credentials } = useSelector((state) => state.credentials);
-    console.log("credentials: ", credentials)
     const [rating, setRating] = useState([])
 
 
@@ -43,6 +42,11 @@ const Qualify = () => {
         dispatch(insertQualify(obj));
     }
 
+    useEffect(() => {
+        listAllTeachers()
+    }, []);
+
+    console.log("LIST: ", listteachers);
 
     return (
         <div>
@@ -56,7 +60,7 @@ const Qualify = () => {
                                 <div className="flip-card mt-3" key={index} tabIndex="0">
                                     <div className="flip-card-inner">
                                         <div className="flip-card-front">
-                                            <img src={`data:image/png;base64,${elemnt.img}`} style={{ width: '70%', margin: 'auto' }} />
+                                            {/* <img src={`data:image/png;base64,${elemnt.img}`} style={{ width: '70%', margin: 'auto' }} /> */}
                                             <div className="card-body">
                                                 <h3 className="card-text" >{elemnt.name}</h3>
                                             </div>

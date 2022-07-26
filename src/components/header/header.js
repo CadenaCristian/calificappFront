@@ -1,21 +1,28 @@
 import React from "react";
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPowerOff } from '@fortawesome/free-solid-svg-icons'
 
 const Header = () => {
+    const History = useHistory();
+    const handleRedirect = (route) => { History.push(route) }
+    const { credentials } = useSelector((state) => state.credentials);
+
+    const logOut = () => {
+        handleRedirect("/")
+    }
+
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <a className="navbar-brand" href="#">Navbar</a>
-            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div className="navbar-nav">
-                    <a className="nav-link active" href="#">Home <span className="sr-only">(current)</span></a>
-                    <a className="nav-link" href="#">Features</a>
-                    <a className="nav-link" href="#">Pricing</a>
-                    <a className="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </div>
+        <div className="container-fluid">
+            <div className="row">
+                <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                    <h3 className="mt-1 col-md-10" style={{ color: 'black' }}>{credentials.dataUser.name}</h3>
+                    <button className="btn btn-danger col-md-2" onClick={logOut}>Log out <FontAwesomeIcon icon={faPowerOff} /></button>
+                </nav>
             </div>
-        </nav>
+        </div>
     )
 }
 

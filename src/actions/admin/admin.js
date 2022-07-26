@@ -7,7 +7,7 @@ export const adminReports = () => {
         const endpoint = `listTeacherNotes`
         const resp = await fetchApi(endpoint, 'GET');
         const body = await resp.json();
-        console.log(body);
+        console.log("body: ", body);
         try {
             dispatch({ type: typesAdminReports.LISTQUALIFY, payload: body })
         } catch (error) {
